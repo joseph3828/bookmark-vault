@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
 export interface Bookmark {
@@ -22,6 +23,8 @@ export default function BookmarkList({
   onTagClick: (tag: string) => void
 }) {
   const supabase = createClient()
+  const [takeawaysMap, setTakeawaysMap] = useState<Record<string, string>>({})
+  const [loadingMap, setLoadingMap] = useState<Record<string, boolean>>({})
 
   const handleDelete = async (id: string) => {
     const { error } = await supabase.from('bookmarks').delete().eq('id', id)
@@ -35,6 +38,27 @@ export default function BookmarkList({
       return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`
     } catch {
       return ''
+    }
+  }
+
+  const fetchTakeaways = async (bm: Bookmark) => {
+    setLoadingMap((prev) => ({ ...prev, [bm.id]: true }))
+    try {
+      const res = await fetch('/api/takeaways', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: bm.url, title: bm.title, summary: bm.summary }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        setTakeawaysMap((prev) => ({ ...prev, [bm.id]: data.takeaways }))
+      } else {
+        alert(data.error || 'Could not fetch takeaways')
+      }
+    } catch {
+      alert('Error connecting to server')
+    } finally {
+      setLoadingMap((prev) => ({ ...prev, [bm.id]: false }))
     }
   }
 
@@ -75,6 +99,22 @@ export default function BookmarkList({
                   </button>
                 ))}
               </div>
+            )}
+
+            {/* AI Key Takeaways Section */}
+            {takeawaysMap[bm.id] ? (
+              <div className="mt-3 p-2.5 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-700 whitespace-pre-line">
+                <p className="font-semibold text-gray-900 mb-1">Key Takeaways:</p>
+                {takeawaysMap[bm.id]}
+              </div>
+            ) : (
+              <button
+                onClick={() => fetchTakeaways(bm)}
+                disabled={loadingMap[bm.id]}
+                className="mt-3 text-xs text-purple-600 hover:text-purple-800 font-medium flex items-center gap-1"
+              >
+                {loadingMap[bm.id] ? '✨ Generating...' : '✨ AI Key Takeaways'}
+              </button>
             )}
           </div>
 
