@@ -6,6 +6,7 @@ import AddBookmarkForm from '@/components/AddBookmarkForm'
 import BookmarkList, { Bookmark } from '@/components/BookmarkList'
 import Auth from '@/components/Auth'
 import { User } from '@supabase/supabase-js'
+import VaultChat from '@/components/VaultChat'
 
 export default function Home() {
   const [user, setUser] = useState<User | null>(null)
@@ -105,6 +106,8 @@ export default function Home() {
             onDelete={checkUserAndFetch}
             onTagClick={(tag) => setSelectedTag(tag)}
           />
+
+          <VaultChat bookmarks={bookmarks} />
         </>
       )}
     </main>
