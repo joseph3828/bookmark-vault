@@ -4,15 +4,25 @@ import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
 export default function AddBookmarkForm({ onBookmarkAdded }: { onBookmarkAdded: () => void }) {
-  const [url, setUrl] = useState('')
+  const [urlInput, setUrlInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [statusText, setStatusText] = useState('')
   const supabase = createClient()
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!url) return
+  // Ensure URL has http/https protocol
+  const normalizeUrl = (input: string) => {
+    let formatted = input.trim()
+    if (!/^https?:\/\//i.test(formatted)) {
+      formatted = `https://${formatted}`
+    }
+    return formatted
+  }
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault() // Enables submit on Enter key press
+    if (!urlInput) return
+
+    const formattedUrl = normalizeUrl(urlInput)
     setLoading(true)
     setStatusText('Generating AI summary...')
 
@@ -24,14 +34,14 @@ export default function AddBookmarkForm({ onBookmarkAdded }: { onBookmarkAdded: 
         return
       }
 
-      // 1. Call AI API route
+      // Call AI API route
       const aiResponse = await fetch('/api/summarize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url }),
+        body: JSON.stringify({ url: formattedUrl }),
       })
 
-      let aiData = { title: url, summary: 'Saved resource', tags: ['resource'] }
+      let aiData = { title: formattedUrl, summary: 'Saved resource', tags: ['resource'] }
       
       if (aiResponse.ok) {
         aiData = await aiResponse.json()
@@ -39,10 +49,9 @@ export default function AddBookmarkForm({ onBookmarkAdded }: { onBookmarkAdded: 
 
       setStatusText('Saving to vault...')
 
-      // 2. Save result in Supabase
       const { error } = await supabase.from('bookmarks').insert({
-        url,
-        title: aiData.title || url,
+        url: formattedUrl,
+        title: aiData.title || formattedUrl,
         description: aiData.summary,
         summary: aiData.summary,
         tags: aiData.tags || ['web'],
@@ -51,7 +60,7 @@ export default function AddBookmarkForm({ onBookmarkAdded }: { onBookmarkAdded: 
 
       if (error) throw error
 
-      setUrl('')
+      setUrlInput('')
       onBookmarkAdded()
     } catch (err: any) {
       alert(err.message || 'Error processing link')
@@ -65,10 +74,10 @@ export default function AddBookmarkForm({ onBookmarkAdded }: { onBookmarkAdded: 
     <form onSubmit={handleSubmit} className="flex flex-col gap-2 my-4">
       <div className="flex gap-2">
         <input
-          type="url"
-          placeholder="https://example.com"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
+          type="text"
+          placeholder="youtube.com or https://example.com"
+          value={urlInput}
+          onChange={(e) => setUrlInput(e.target.value)}
           required
           disabled={loading}
           className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
