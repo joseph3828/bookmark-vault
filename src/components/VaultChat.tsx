@@ -42,7 +42,7 @@ export default function VaultChat({ bookmarks }: { bookmarks: Bookmark[] }) {
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 px-4 py-3 bg-blue-600 text-white rounded-full shadow-lg font-medium hover:bg-blue-700 flex items-center gap-2"
+        className="fixed bottom-6 right-6 px-4 py-3 bg-blue-600 text-white rounded-full shadow-lg font-medium hover:bg-blue-700 flex items-center gap-2 transition"
       >
         💬 Ask My Vault
       </button>
@@ -50,15 +50,15 @@ export default function VaultChat({ bookmarks }: { bookmarks: Bookmark[] }) {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 w-80 sm:w-96 bg-white border border-gray-200 rounded-2xl shadow-2xl flex flex-col h-96 z-50 text-black">
-      <div className="p-3 border-b flex justify-between items-center bg-blue-600 text-white rounded-t-2xl">
+    <div className="fixed bottom-6 right-6 w-80 sm:w-96 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl flex flex-col h-96 z-50 text-gray-900 dark:text-gray-100 transition-colors">
+      <div className="p-3 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-blue-600 text-white rounded-t-2xl">
         <h3 className="font-semibold text-sm">Ask My Vault</h3>
         <button onClick={() => setIsOpen(false)} className="text-xs hover:opacity-75">✕</button>
       </div>
 
       <div className="flex-1 p-3 overflow-y-auto flex flex-col gap-2 text-sm">
         {messages.length === 0 && (
-          <p className="text-gray-400 text-xs text-center my-auto">
+          <p className="text-gray-400 dark:text-gray-500 text-xs text-center my-auto">
             Ask questions about your saved links (e.g., "What articles do I have about React?")
           </p>
         )}
@@ -68,7 +68,7 @@ export default function VaultChat({ bookmarks }: { bookmarks: Bookmark[] }) {
             className={`p-2 rounded-lg max-w-[85%] ${
               m.role === 'user'
                 ? 'bg-blue-600 text-white self-end'
-                : 'bg-gray-100 text-gray-800 self-start'
+                : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 self-start'
             }`}
           >
             {m.text}
@@ -77,18 +77,18 @@ export default function VaultChat({ bookmarks }: { bookmarks: Bookmark[] }) {
         {loading && <p className="text-xs text-gray-400 italic">Thinking...</p>}
       </div>
 
-      <form onSubmit={handleSend} className="p-2 border-t flex gap-2">
+      <form onSubmit={handleSend} className="p-2 border-t border-gray-200 dark:border-gray-700 flex gap-2">
         <input
           type="text"
           placeholder="Ask a question..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="flex-1 px-3 py-1.5 border rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="flex-1 px-3 py-1.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
         <button
           type="submit"
           disabled={loading}
-          className="px-3 py-1.5 bg-blue-600 text-white text-xs rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50"
+          className="px-3 py-1.5 bg-blue-600 text-white text-xs rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 transition"
         >
           Send
         </button>

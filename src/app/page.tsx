@@ -8,6 +8,7 @@ import Auth from '@/components/Auth'
 import { User } from '@supabase/supabase-js'
 import VaultChat from '@/components/VaultChat'
 import BookmarkImporter from '@/components/BookmarkImporter'
+import ThemeToggle from '@/components/ThemeToggle'
 
 export default function Home() {
   const [user, setUser] = useState<User | null>(null)
@@ -51,26 +52,31 @@ export default function Home() {
 
   return (
     <main className="max-w-4xl mx-auto p-6">
+      {/* Header Row with Theme Toggle */}
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-3xl font-bold">Resource Vault</h1>
-          <p className="text-gray-600">Save, search, and summarize your links.</p>
+          <p className="text-gray-600 dark:text-gray-400">Save, search, and summarize your links.</p>
         </div>
-        {user && (
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-600">{user.email}</span>
-            <button
-              onClick={async () => {
-                await supabase.auth.signOut()
-                setUser(null)
-                setBookmarks([])
-              }}
-              className="text-sm px-3 py-1 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
-            >
-              Sign Out
-            </button>
-          </div>
-        )}
+        
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
+          {user && (
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-gray-600 dark:text-gray-300 hidden sm:inline">{user.email}</span>
+              <button
+                onClick={async () => {
+                  await supabase.auth.signOut()
+                  setUser(null)
+                  setBookmarks([])
+                }}
+                className="text-sm px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+              >
+                Sign Out
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {!user ? (
@@ -87,15 +93,15 @@ export default function Home() {
               placeholder="Search bookmarks..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full sm:w-72 px-4 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full sm:w-72 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
 
             {selectedTag && (
-              <div className="flex items-center gap-2 bg-blue-50 text-blue-800 text-xs px-3 py-1.5 rounded-full font-medium">
+              <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-950 text-blue-800 dark:text-blue-200 text-xs px-3 py-1.5 rounded-full font-medium">
                 <span>Filter: #{selectedTag}</span>
                 <button
                   onClick={() => setSelectedTag(null)}
-                  className="font-bold hover:text-blue-900 ml-1"
+                  className="font-bold hover:text-blue-900 dark:hover:text-blue-100 ml-1"
                 >
                   ✕
                 </button>

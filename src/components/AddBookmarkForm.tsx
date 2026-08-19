@@ -80,17 +80,17 @@ export default function AddBookmarkForm({ onBookmarkAdded }: { onBookmarkAdded: 
           onChange={(e) => setUrlInput(e.target.value)}
           required
           disabled={loading}
-          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+          className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400 dark:placeholder-gray-500"
         />
         <button
           type="submit"
           disabled={loading}
-          className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50"
+          className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 transition"
         >
           {loading ? 'AI Analyzing...' : 'Add Link'}
         </button>
       </div>
-      {statusText && <p className="text-xs text-blue-600 font-medium animate-pulse">{statusText}</p>}
+      {statusText && <p className="text-xs text-blue-600 dark:text-blue-400 font-medium animate-pulse">{statusText}</p>}
     </form>
   )
 }

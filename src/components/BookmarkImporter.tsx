@@ -28,7 +28,6 @@ export default function BookmarkImporter({ onImportComplete }: { onImportComplet
         return
       }
 
-      // Extract valid HTTP links (up to 20 for rate limit safety)
       const parsedLinks = anchorElements
         .map((a) => ({
           url: a.href,
@@ -64,8 +63,8 @@ export default function BookmarkImporter({ onImportComplete }: { onImportComplet
   }
 
   return (
-    <div className="my-4 p-4 border border-dashed border-gray-300 rounded-xl bg-gray-50 text-center">
-      <label className="cursor-pointer font-medium text-sm text-blue-600 hover:text-blue-800">
+    <div className="my-4 p-4 border border-dashed border-gray-300 dark:border-gray-800 rounded-xl bg-gray-50/50 dark:bg-gray-900/50 text-center transition-colors">
+      <label className="cursor-pointer font-medium text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
         {loading ? status : '📁 Import Chrome / Browser Bookmarks (.html)'}
         <input
           type="file"
