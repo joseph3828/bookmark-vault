@@ -7,6 +7,7 @@ import BookmarkList, { Bookmark } from '@/components/BookmarkList'
 import Auth from '@/components/Auth'
 import { User } from '@supabase/supabase-js'
 import VaultChat from '@/components/VaultChat'
+import BookmarkImporter from '@/components/BookmarkImporter'
 
 export default function Home() {
   const [user, setUser] = useState<User | null>(null)
@@ -77,7 +78,8 @@ export default function Home() {
       ) : (
         <>
           <AddBookmarkForm onBookmarkAdded={checkUserAndFetch} />
-
+          <BookmarkImporter onImportComplete={checkUserAndFetch} />
+          
           {/* Search Bar & Active Tag Filter */}
           <div className="my-6 flex flex-col sm:flex-row gap-3 items-center justify-between">
             <input
